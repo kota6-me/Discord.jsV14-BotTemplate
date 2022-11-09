@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const client = new Client({
     intents: Object.values(GatewayIntentBits).reduce((a, b) => a | b)
 });
@@ -11,6 +11,21 @@ client.once("ready", () => {
         return;
     }else{
         logger.success(`Logged in as ${client.user.tag}!!`)
+    }
+}).on("messageCreate", (message) => {
+    if (message.author.bot) return;
+    if (!message.content.startsWith("&")) return;
+    const args = message.content.slice(1).trim().split(/ +/g);
+    const command = args.shift().toLowerCase();
+    if (command === "ping") {
+        message.channel.send({
+            embeds: [
+                new EmbedBuilder()
+                .setTitle("Ping!:ping_pong:")
+                .setDescription(client.ws.ping + "ms")
+                .setTimestamp()
+            ]
+        })
     }
 })
 
